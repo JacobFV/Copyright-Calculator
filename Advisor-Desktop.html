@@ -1,0 +1,357 @@
+<html>
+<head>
+	<title>Coptright Advisor v3</title>
+</head>
+<body>
+<div>
+<div id="qBar" class="qBar">What kind of content are you using?</div>
+<div id="aBar" class="aBar">
+<button class="buttons" onClick='excerpt()'>Excerpt</button>
+<button class="buttons" onClick='poem()'>Poem</button>
+<button class="buttons" onclick='shortWork()'>Short Work</button>
+<button class="buttons" onclick='book()'>Book</button>
+<button class="buttons" onclick='printedGraphic()'>Printed Graphic</button>
+<button class="buttons" onclick='digitalImage()'>Computer Picture</button>
+<button class="buttons" onclick='song()'>Song</button>
+<button class="buttons" onclick='movie()'>Movie</button>
+<button class="buttons" onclick='computerFile()'>Computer File</button>
+</div>
+</div>
+<div id="stack"></div>
+<script>
+var type = "";
+var poemWords = 0;
+var bookWords = 0;
+function song() {
+    type = "song";
+    addQuestion("What kind of content do you want to use?");
+    addAnswer("You are using a song");
+    qBar.innerHTML = "How much of this song are you using?";
+    aBar.innerHTML = 'Total: <input type="number" class="inputs" id="secondsTotal"> Used: <input type="number" class="inputs" id="secondsUsed"> <button onClick="typeData()" class="buttons">Submit</button>';
+}
+function movie() {
+    type = "movie";
+    addQuestion("What kind of content do you want to use?");
+    addAnswer("You are using a movie");
+    qBar.innerHTML = "How are you getting the movie?";
+    aBar.innerHTML = '<input onClick="movieChosen(0)" type="button" class="buttons" value="Streaming"> <input onClick="movieChosen(3)" type="button" class="buttons" value="Legally obtained movie"> <input onClick="movieChosen(1)" type="button" class="buttons" value="Copied from somewhere else"> <input onClick="movieChosen(2)" type="button" class="buttons" onClick="typeData()" value="Home Use Only DVD">';
+}
+function movieChosen(movieSource) {
+    addQuestion(qBar.innerHTML);
+    if (movieSource == 0) {
+        //streaming
+        addAnswer("Streaming from somewhere like Netflix.");
+        sorry("you aren't allowed to publicly stream movies");
+    }
+    else if (movieSource == 1) {
+        //copied
+        addAnswer("Copied from another file or DVD.");
+        sorry("copying movies is illegal");
+    }
+    else if (movieSource == 2) {
+        //home use
+        addAnswer("From a 'home use only' DVD.");
+        purpose();
+    }
+    else if (movieSource == 3) {
+        //legally bought
+        addAnswer("Store where you can legally buy movies.")
+        purpose();
+    }
+}
+function computerFile() {
+    type = "computer file";
+    addQuestion("What kind of content do you want to use?");
+    addAnswer("You are using a computer file");
+    qBar.innerHTML = "How did you get this "+type+"?";
+    aBar.innerHTML = '<input onClick="royalty(0)" type="button" class="buttons" value="Legally Obtained"> <input onClick="royalty(1)" type="button" class="buttons" value="Pirated">';
+}
+function royalty(royaltyBool) {
+    //if gates here
+    addQuestion(qBar.innerHTML);
+    if (royaltyBool == 0) {
+        addAnswer("You legally obtained the " + type + ".");
+        purpose();
+    }
+    else if (royaltyBool == 1) {
+        addAnswer("You used pirating to get the " + type + ".");
+        sorry("pirating isn't very nice");
+    }
+}
+function printedGraphic() {
+    addQuestion(qBar.innerHTML);
+    addAnswer("You are using a printed graphic");
+    type = "computer picture";
+    purpose();
+}
+function digitalImage() {
+    type = "digital image";
+    addQuestion("What kind of content do you want to use?");
+    addAnswer("You are using a computer picture");
+    qBar.innerHTML = "Is it royalty free?";
+    aBar.innerHTML = '<input onClick="royalty(0)" type="button" class="buttons" value="Legally Obtained"> <input onClick="royalty(1)" type="button" class="buttons" value="Pirated">';
+}
+function imageData(imageNum) {
+    imageRoyalty = imageNum;
+    typeData();
+}
+function poem() {
+    type = "poem";
+    addQuestion("What kind of content do you want to use?");
+    addAnswer("You are using a poem");
+    qBar.innerHTML = "How many words are you using?";
+    aBar.innerHTML = '<input onClick="poemData(0)" type="button" class="buttons" value="< Less than 250 words"> <input onClick="poemData(1)" type="button" class="buttons" value="250"> <input onClick="poemData(2)" type="button" class="buttons" value="More than 250 words >">';
+}
+function book() {
+    type = "book";
+    addQuestion("What kind of content do you want to use?");
+    addAnswer("You are using a book");
+    qBar.innerHTML = "How many chapters are you using?";
+    aBar.innerHTML = '<input onClick="bookData(0)" type="button" class="buttons" value="1 chapter"><input onClick="bookData(1)" type="button" class="buttons" value="2 or more chapters">';
+}
+function poemData(poemNum) {
+    poemWords = poemNum;
+    typeData();
+}
+function bookData(bookNum) {
+    bookWords = bookNum;
+    typeData();
+}
+function shortWork(){
+	type="short work";
+	addQuestion("What kind of content do you want to use?");
+	addAnswer("You are using a short work");
+	qBar.innerHTML="How many words are there?";
+	aBar.innerHTML='Total: <input type="number" id="wordsTotal" class="inputs"> I\'m using: <input type="number" id="wordsUsed" class="inputs"> <input type="button" onClick="typeData()" value="Submit" class="buttons">';
+}
+function excerpt(){
+	type="excerpt";
+	addQuestion("What kind of content do you want to use?");
+	addAnswer("You are using an excerpt");
+	qBar.innerHTML="How many words are there?";
+	aBar.innerHTML='Total: <input type="number" id="wordsTotal" class="inputs"> I\'m using: <input type="number" id="wordsUsed" class="inputs"> <input type="button" onClick="typeData()" value="Submit" class="buttons">';
+}
+function sorry(reason){
+	qBar.innerHTML="Sorry";
+	aBar.innerHTML = "you don't qualify for fair use";
+	if (reason != 0) {
+	    addQuestion("You don't qualify because " + reason + ".");
+	}
+	if (reason == 0) {
+        addQuestion("You don't qualify because you're hurting the "+type+"'s revenue.")
+	}
+}
+function typeData(){
+	if(type=="excerpt"){
+		var total=document.getElementById("wordsTotal").value;
+		var used=document.getElementById("wordsUsed").value;
+		addQuestion(qBar.innerHTML);
+		addAnswer("You have "+total+" words total, and are using "+used+" words.");
+		//calculate for 10% or up to 1,000 words
+		if(total<=10000){
+			if(used/ total>.1){
+				sorry("you used more than 10% of the total word count");
+			}
+			if(used/ total<=.1){
+			    purpose();
+			}
+		}
+		if(total>10000){
+			if(used>1000){
+				sorry("you used more than 1,000 words");
+			}
+			if(used<=1000){
+			    purpose();
+			}
+		}
+	}
+	if(type=="poem"){
+	    //max 250 words
+        addQuestion(qBar.innerHTML)
+	    if (poemWords == 0) {
+	        addAnswer("You're using less than 250 words");
+	        purpose();
+	    }
+	    else if (poemWords == 1) {
+	        addAnswer("You're using 250 words");
+	        purpose();
+	    }
+	    else if (poemWords == 2) {
+	        addAnswer("You're using more than 250 words");
+			sorry("you used more than 250 words");
+		}
+	}
+	if(type=="short work"){
+		var total=document.getElementById("wordsTotal").value;
+		var used=document.getElementById("wordsUsed").value;
+		addQuestion(qBar.innerHTML);
+		addAnswer("You have "+total+" words total, and are using "+used+" words.");
+		//calculate for 10% or up to 1,000 words
+		if(total<=25000){
+			if(used/ total>.1){
+				sorry("you used more than 10% of the total word count");
+			}
+			if(used/ total<=.1){
+			    purpose();
+			}
+		}
+		if(total>25000){
+			if(used>2500){
+				sorry("you used more than 2,500 words");
+			}
+			if(used<=2500){
+			    purpose();
+			}
+		}
+	}
+	else if (type == "book") {
+	    addQuestion(qBar.innerHTML);
+	    if (bookWords == 0) {
+	        addAnswer("You are using one chapter");
+	        purpose();
+	    }
+	    else if (bookWords == 1) {
+	        addAnswer("You are using more than one chapter");
+	        sorry("you used more than one chapter");
+	    }
+	}
+	if (type == "song") {
+	    var tSec = document.getElementById("secondsTotal").value;
+	    var uSec = document.getElementById("secondsUsed").value;
+	    if (tSec > 300) {
+            //more than 300 second song
+	        if (uSec > 30) {
+	            sorry("you used more than 30 seconds of a song");
+	        }
+	        else if(uSec<=30){
+	            purpose();
+	        }
+	    }
+	    else if (tSec <= 300) {
+	        //under 300 second song
+	        if (uSec / tSec > .1) {
+	            sorry("you used more than 10% of the song");
+	        }
+	        if (uSec / tSec <= .1) {
+	            purpose();
+	        }
+	    }
+	}
+}
+function purpose() {
+    qBar.innerHTML = "What do you want to use this " + type + " for?";
+    aBar.innerHTML = '<button class="buttons" onClick="reasonChosen(0)">Entertainment</button><button class="buttons" onClick="reasonChosen(1)">Educational</button><button class="buttons" onClick="reasonChosen(2)">Buisness</button><button class="buttons" onClick="reasonChosen(3)">Private</button>';
+}
+function reasonChosen(reasonNum) {
+    if (reasonNum == 0) {
+        //entertainment
+        sorry("you used your " + type + " for entertainment");
+    }
+    else if (reasonNum == 1) {
+        //educational
+        published("school");
+    }
+    else if (reasonNum == 2) {
+        //commercial
+        sorry("you used your " + type + " for buisness");
+    }
+    else if (reasonNum == 3) {
+        //private
+        published("personal");
+    }
+}
+function published(audience) {
+    addQuestion(qBar.innerHTML);
+    addAnswer(audience);
+    qBar.innerHTML = "Has this " + type + " been published for " + audience + " use?";
+    aBar.innerHTML = '<button class="buttons" onClick="benifitAudience()">Yes</button> <button class="buttons" onClick="sorry(\"you are using the\"+type+\"out of its intended use\")">No</button>';
+}
+function benifitAudience() {
+    addQuestion(qBar.innerHTML);
+    addAnswer("Yes");
+    qBar.innerHTML = "How will using the " + type + " effect its sales?";
+    aBar.innerHTML = '<button onClick="sorry(0)" class="buttons">Negitivly</button> <button onClick="giveCredit()" class="buttons">No Effect</button> <button onClick="giveCredit()" class="buttons">Positivly</button> ';
+}
+function giveCredit() {
+    addQuestion(qBar.innerHTML);
+    addAnswer("No effect or positivly");
+    youWin();
+}
+function youWin() {
+    qBar.innerHTML = "You qualify for fair use";
+    aBar.innerHTML = "You likely don't need permission to use the "+type+".";
+    addQuestion("Copyright Calculator does NOT assume any responsibility if the above advice it is giving happens to throw you in court or get in trouble. Copyright Calculator should NOT be your only way of checking the fair us of something.")
+}
+function addQuestion(text){
+	var stackHTML = document.getElementById("stack").innerHTML;
+	document.getElementById("stack").innerHTML='<p class="qBox">'+text+"</p>"+stackHTML;
+}
+function addAnswer(text){
+	var stackHTML = document.getElementById("stack").innerHTML;
+	document.getElementById("stack").innerHTML='<p class="aBox">'+text+"</p>"+stackHTML;
+}
+</script>
+<style>
+body{
+background-color: #eefeff;
+}
+.qBar{
+    width:99%;
+	font-size: 16pt;
+    position:relative;
+	text-align: center;
+    word-wrap:break-word;
+	background-color:#e4e8e8;
+	font-family: calibri, light;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	box-shadow: 0px 2.5px 5px #ccc;}
+.aBar{
+    width:99%;
+	font-size: 11pt;
+    position:relative;
+	text-align: center;
+	font-family: calibri;
+    word-wrap:break-word;
+	background-color:#e1e5e5;
+	border-bottom-left-radius: 25px;
+	border-bottom-right-radius: 25px;
+	box-shadow: 0px 2px 1px #ccc;}
+.qBox{
+    left:25%;
+    width: 50%;
+	padding: 3px;
+	border-radius:4px;
+    position:relative;
+    align-self:center;
+	background-color: #23f5fe;
+	box-shadow: 0px 1px 5px #ccc;
+}
+.aBox{
+    left:25%;
+    width: 50%;
+	padding: 2px;
+	border-radius:4px;
+    position:relative;
+    align-self:center;
+	background-color: #94feff;
+	box-shadow: 0px 1px 5px #ccc;
+}
+.buttons{
+	color: #0020ff;
+	font-size: 12pt;
+	border-width:0px;
+	font-family: "calibri", light;
+	background-color: hsla(170,100%,100%,.25);
+}
+.inputs{
+	width: 50px;
+	border-width:.5px;
+	border-radius: 3px;
+	border-color: #cdf0ff;
+	background-color: #b0f4ff;
+    box-shadow: 0px 1px 0px 0px #aaa inset;
+}
+</style>
+</body>
+</html>
